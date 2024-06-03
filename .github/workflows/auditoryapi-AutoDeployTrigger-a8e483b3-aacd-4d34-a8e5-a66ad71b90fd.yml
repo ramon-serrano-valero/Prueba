@@ -31,8 +31,12 @@ jobs:
           client-id: ${{ secrets.AUDITORYAPI_AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AUDITORYAPI_AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AUDITORYAPI_AZURE_SUBSCRIPTION_ID }}
-
       - name: Build and push container image to registry
+        run: |
+          docker build -t ramonserranosopra/auditoryapi:${{ github.sha }} .
+          echo ${{ secrets.AUDITORYAPI_REGISTRY_PASSWORD }} | docker login docker.io -u ${{ secrets.AUDITORYAPI_REGISTRY_USERNAME }} --password-stdin
+          docker push ramonserranosopra/auditoryapi:${{ github.sha }}          
+      - name: Deploy to Azure Container Apps
         uses: azure/container-apps-deploy-action@v2
         with:
           appSourcePath: ${{ github.workspace }}/API.Auditory
