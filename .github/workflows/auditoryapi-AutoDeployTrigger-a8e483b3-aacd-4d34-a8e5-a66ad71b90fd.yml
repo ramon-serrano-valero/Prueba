@@ -2,14 +2,13 @@ name: Trigger auto deployment for auditoryapi
 
 # When this action will be executed
 on:
-  # Automatically trigger it when detected changes in repo
+  # Automatically trigger it when detected changes in API.Auditory project
   push:
     branches: 
       [ main ]
     paths:
-#    - '**'
-    - 'API.Auditory/**'
-    - '.github/workflows/auditoryapi-AutoDeployTrigger-a8e483b3-aacd-4d34-a8e5-a66ad71b90fd.yml'
+      - 'API.Auditory/**'
+      - '.github/workflows/auditoryapi-AutoDeployTrigger-a8e483b3-aacd-4d34-a8e5-a66ad71b90fd.yml'
 
   # Allow manual trigger 
   workflow_dispatch:      
@@ -18,8 +17,8 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions: 
-      id-token: write #This is required for requesting the OIDC JWT Token
-      contents: read #Required when GH token is used to authenticate with private repo
+      id-token: write # This is required for requesting the OIDC JWT Token
+      contents: read # Required when GH token is used to authenticate with private repo
 
     steps:
       - name: Checkout to the branch
@@ -31,11 +30,13 @@ jobs:
           client-id: ${{ secrets.AUDITORYAPI_AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AUDITORYAPI_AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AUDITORYAPI_AZURE_SUBSCRIPTION_ID }}
+
       - name: Build and push container image to registry
         run: |
-          docker build -t ramonserranosopra/auditoryapi:${{ github.sha }} .
+          docker build -t ramonserranosopra/auditoryapi:${{ github.sha }} -f API.Auditory/Dockerfile API.Auditory
           echo ${{ secrets.AUDITORYAPI_REGISTRY_PASSWORD }} | docker login docker.io -u ${{ secrets.AUDITORYAPI_REGISTRY_USERNAME }} --password-stdin
-          docker push ramonserranosopra/auditoryapi:${{ github.sha }}          
+          docker push ramonserranosopra/auditoryapi:${{ github.sha }}
+
       - name: Deploy to Azure Container Apps
         uses: azure/container-apps-deploy-action@v2
         with:
@@ -48,5 +49,3 @@ jobs:
           imageToBuild: ramonserranosopra/auditoryapi:${{ github.sha }}
           _buildArgumentsKey_: |
             _buildArgumentsValues_
-
-
