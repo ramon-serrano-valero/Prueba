@@ -33,7 +33,7 @@ jobs:
 
       - name: Build and push container image to registry
         run: |
-          docker build -t ramonserranosopra/auditoryapi:${{ github.sha }} -f API.Auditory/Dockerfile API.Auditory
+          docker build -t ramonserranosopra/auditoryapi:${{ github.sha }} -f API.Auditory/Dockerfile .
           echo ${{ secrets.AUDITORYAPI_REGISTRY_PASSWORD }} | docker login docker.io -u ${{ secrets.AUDITORYAPI_REGISTRY_USERNAME }} --password-stdin
           docker push ramonserranosopra/auditoryapi:${{ github.sha }}
 
