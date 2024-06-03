@@ -7,7 +7,8 @@ on:
     branches: 
       [ main ]
     paths:
-    - '**'
+#    - '**'
+    - 'API.Auditory/**'
     - '.github/workflows/auditoryapi-AutoDeployTrigger-a8e483b3-aacd-4d34-a8e5-a66ad71b90fd.yml'
 
   # Allow manual trigger 
