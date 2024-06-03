@@ -13,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(swagger =>
 {
-    swagger.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "API - Auditory", Version = "v1" });
+    swagger.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "API - Auditory 2", Version = "v1" });
 });
 //builder.Services.AddScoped(typeof(IMongoContext), typeof(MongoContext));
 builder.Services.AddTransient(typeof(IMongoContext), typeof(MongoContext));
@@ -31,7 +31,7 @@ var app = builder.Build();
     app.UseSwagger(); 
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API - Auditory");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API - Auditory 2");
     });
 //}
 
