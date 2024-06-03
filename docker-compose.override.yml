@@ -1,0 +1,46 @@
+version: '3.4'
+
+services:
+  
+
+  api.worktimerecord:
+    container_name: api.worktimerecord
+    depends_on:
+      - ms.rabbitmq.bus
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+    ports:
+      - "5080:8080"
+
+  api.auditory:
+    container_name: api.auditory
+    depends_on:
+      - ms.rabbitmq.bus
+    
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+    ports:
+      - "6080:8080"
+
+  ms.rabbitmq.bus:
+    container_name: ms.rabbitmq.bus
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin  
+      - RABBITMQ_DEFAULT_PASS=password  
+  
+  ms.mongo.worktimerecord.db:
+    container_name: ms.mongo.worktimerecord.db
+    restart: always    
+    ports:
+      - "50017:27017"
+  ms.mongo.auditory.db:
+    container_name: ms.mongo.auditory.db
+    restart: always    
+    ports:
+      - "60017:27017"

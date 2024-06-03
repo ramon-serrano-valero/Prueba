@@ -1,0 +1,39 @@
+version: '3.4'
+
+services:
+#docker build -t ramonserranosopra/api.auditory:latest -f API.WorkTimeRecord/Dockerfile .
+  api.worktimerecord:
+    image: ${DOCKER_REGISTRY-}apiworktimerecord
+    build:
+      context: .
+      dockerfile: API.WorkTimeRecord/Dockerfile
+#docker build -t ramonserranosopra/api.auditory:latest -f API.Auditory/Dockerfile .
+  api.auditory:
+    image: ${DOCKER_REGISTRY-}apiauditory
+    build:
+      context: .
+      dockerfile: API.Auditory/Dockerfile      
+  ms.rabbitmq.bus:
+    image: rabbitmq:3-management
+
+  ms.mongo.worktimerecord.db:
+    image: mongo
+    build:
+      context: .
+      dockerfile: ms.mongo.worktimerecord.db/Dockerfile
+    environment:        
+        MONGO_INITDB_DATABASE: work_time_db       
+    volumes:
+      - ./ms.mongo.worktimerecord.db/init.js:/docker-entrypoint-initdb.d/init.js
+    # volumes:
+    #   - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+
+  ms.mongo.auditory.db:
+    image: mongo
+    build:
+      context: .
+      dockerfile: ms.mongo.auditory.db/Dockerfile
+    environment:        
+        MONGO_INITDB_DATABASE: auditory_db       
+    volumes:
+      - ./ms.mongo.auditory.db/init.js:/docker-entrypoint-initdb.d/init.js
