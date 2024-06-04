@@ -1,5 +1,6 @@
 using API.WorkTimeRecord.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using ms.communications.Events;
 using ms.communications.Producers;
 
@@ -9,12 +10,14 @@ namespace API.WorkTimeRecord.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
         private readonly IRabbitProducer _rabbitMqproducer;
         private readonly IMongoRepository _mongorepository;
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, IMongoRepository mongorepository, IRabbitProducer rabbitMqproducer)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IMongoRepository mongorepository, IRabbitProducer rabbitMqproducer, IConfiguration configuration)
         {
+            _configuration = configuration;            
             _logger = logger;
             _mongorepository = mongorepository;
             _rabbitMqproducer = rabbitMqproducer;
@@ -31,6 +34,12 @@ namespace API.WorkTimeRecord.Controllers
         {
 
             await _mongorepository.CreateMongoEntity(new Entities.MongoRecord() { UserName = "rserrano", FirstName = "Ramón", LastName = "Serrano Valero", LastRecord = "2024-05-15T08:00:00Z", LastMode = "Entrada" });
+        }
+        [HttpPut]
+        public string PutConfig()
+        {
+
+            return _configuration.GetConnectionString("Entity:HostName");
         }
     }
 }
