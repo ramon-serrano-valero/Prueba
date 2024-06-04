@@ -7,7 +7,7 @@ on:
     branches: 
       [ main ]
     paths:
-    - '**'
+    - 'API.Auditory/**'
     - '.github/workflows/auditory-AutoDeployTrigger-cc200462-4e93-4dcb-b387-bff2aaa54ea7.yml'
 
   # Allow manual trigger 
@@ -30,11 +30,15 @@ jobs:
           client-id: ${{ secrets.AUDITORY_AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AUDITORY_AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AUDITORY_AZURE_SUBSCRIPTION_ID }}
-
+      - name: Build and push container image to registry
+        run: |
+          docker build -t ramonserranosopra/auditoryapi:${{ github.sha }} -f Dockerfile ../
+          echo ${{ secrets.AUDITORYAPI_REGISTRY_PASSWORD }} | docker login docker.io -u ${{ secrets.AUDITORYAPI_REGISTRY_USERNAME }} --password-stdin
+          docker push ramonserranosopra/auditoryapi:${{ github.sha }}
       - name: Build and push container image to registry
         uses: azure/container-apps-deploy-action@v2
         with:
-          appSourcePath: ${{ github.workspace }} 
+          appSourcePath: ${{ github.workspace }}/API.Auditory
           registryUrl: docker.io
           registryUsername: ${{ secrets.AUDITORY_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.AUDITORY_REGISTRY_PASSWORD }}
