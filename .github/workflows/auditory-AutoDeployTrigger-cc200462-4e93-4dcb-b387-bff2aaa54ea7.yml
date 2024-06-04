@@ -32,7 +32,7 @@ jobs:
           subscription-id: ${{ secrets.AUDITORY_AZURE_SUBSCRIPTION_ID }}
       - name: Build and push container image to registry
         run: |
-          docker build -t ramonserranosopra/auditoryapi:${{ github.sha }} -f API.Auditory/Dockerfile ../
+          docker build -t ramonserranosopra/auditoryapi:${{ github.sha }} -f API.Auditory/Dockerfile .
           echo ${{ secrets.AUDITORYAPI_REGISTRY_PASSWORD }} | docker login docker.io -u ${{ secrets.AUDITORYAPI_REGISTRY_USERNAME }} --password-stdin
           docker push ramonserranosopra/auditoryapi:${{ github.sha }}
       - name: Build and push container image to registry
